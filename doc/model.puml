@@ -1,0 +1,198 @@
+@startuml
+' PlantUML class diagram for Recipes & Cost Calculator
+
+class Ingredient {
+  + id: UUID
+  + name: String
+  + defaultUnit: String
+  + purchaseUnit: String
+  + currency: String
+  + density?: Float
+  + notes?: String
+}
+
+class IngredientPriceHistory {
+  + id: UUID
+  + ingredientId: UUID
+  + price: Decimal
+  + purchaseUnit: String
+  + effectiveDate: Date
+}
+
+class Packaging {
+  + id: UUID
+  + name: String
+  + unit: String
+  + purchaseUnit: String
+  + currency: String
+  + notes?: String
+}
+
+class PackagingPriceHistory {
+  + id: UUID
+  + packagingId: UUID
+  + price: Decimal
+  + purchaseUnit: String
+  + effectiveDate: Date
+}
+
+class Recipe {
+  + id: UUID
+  + title: String
+  + servings: Integer
+  + yieldFactor?: Float
+  + steps: Text
+  + notes?: String
+}
+
+class RecipeIngredient {
+  + id: UUID
+  + recipeId: UUID
+  + ingredientId: UUID
+  + quantity: Decimal
+  + unit: String
+  + yieldLossPercent?: Float
+}
+
+class RecipePackaging {
+  + id: UUID
+  + recipeId: UUID
+  + packagingId: UUID
+  + quantityPerPortion: Decimal
+  + unit: String
+}
+
+class RecipeCostSnapshot {
+  + id: UUID
+  + recipeId: UUID
+  + calculatedAt: DateTime
+  + ingredientCosts: JSON
+  + packagingCost: Decimal
+  + laborCost: Decimal
+  + energyCost: Decimal
+  + overhead: Decimal
+  + totalCost: Decimal
+  + perPortionCost: Decimal
+}
+
+class SalesRecord {
+  + id: UUID
+  + recipeId: UUID
+  + soldAt: DateTime
+  + quantity: Integer
+  + salePricePerPortion: Decimal
+}
+
+' Relationships
+Ingredient "1" -- "0..*" IngredientPriceHistory : priceHistory
+Packaging "1" -- "0..*" PackagingPriceHistory : priceHistory
+
+Recipe "1" -- "0..*" RecipeIngredient : has
+RecipeIngredient "*" -- "1" Ingredient : references
+
+Recipe "1" -- "0..*" RecipePackaging : uses
+RecipePackaging "*" -- "1" Packaging : references
+
+Recipe "1" -- "0..*" RecipeCostSnapshot : snapshots
+Recipe "1" -- "0..*" SalesRecord : sales
+
+@enduml
+@startuml
+' PlantUML class diagram for Recipes & Cost Calculator
+
+class Ingredient {
+  + id: UUID
+  + name: String
+  + defaultUnit: String
+  + purchaseUnit: String
+  + currency: String
+  + density?: Float
+  + notes?: String
+}
+
+class IngredientPriceHistory {
+  + id: UUID
+  + ingredientId: UUID
+  + price: Decimal
+  + purchaseUnit: String
+  + effectiveDate: Date
+}
+
+class Packaging {
+  + id: UUID
+  + name: String
+  + unit: String
+  + purchaseUnit: String
+  + currency: String
+  + notes?: String
+}
+
+class PackagingPriceHistory {
+  + id: UUID
+  + packagingId: UUID
+  + price: Decimal
+  + purchaseUnit: String
+  + effectiveDate: Date
+}
+
+class Recipe {
+  + id: UUID
+  + title: String
+  + servings: Integer
+  + yieldFactor?: Float
+  + steps: Text
+  + notes?: String
+}
+
+class RecipeIngredient {
+  + id: UUID
+  + recipeId: UUID
+  + ingredientId: UUID
+  + quantity: Decimal
+  + unit: String
+  + yieldLossPercent?: Float
+}
+
+class RecipePackaging {
+  + id: UUID
+  + recipeId: UUID
+  + packagingId: UUID
+  + quantityPerPortion: Decimal
+  + unit: String
+}
+
+class RecipeCostSnapshot {
+  + id: UUID
+  + recipeId: UUID
+  + calculatedAt: DateTime
+  + ingredientCosts: JSON
+  + packagingCost: Decimal
+  + laborCost: Decimal
+  + energyCost: Decimal
+  + overhead: Decimal
+  + totalCost: Decimal
+  + perPortionCost: Decimal
+}
+
+class SalesRecord {
+  + id: UUID
+  + recipeId: UUID
+  + soldAt: DateTime
+  + quantity: Integer
+  + salePricePerPortion: Decimal
+}
+
+' Relationships
+Ingredient "1" -- "0..*" IngredientPriceHistory : priceHistory
+Packaging "1" -- "0..*" PackagingPriceHistory : priceHistory
+
+Recipe "1" -- "0..*" RecipeIngredient : has
+RecipeIngredient "*" -- "1" Ingredient : references
+
+Recipe "1" -- "0..*" RecipePackaging : uses
+RecipePackaging "*" -- "1" Packaging : references
+
+Recipe "1" -- "0..*" RecipeCostSnapshot : snapshots
+Recipe "1" -- "0..*" SalesRecord : sales
+
+@enduml

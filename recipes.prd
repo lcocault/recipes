@@ -1,0 +1,125 @@
+Product Requirements Document (PRD): Recipes & Cost Calculator
+
+1. Context & Goal
+Your partner sells prepared food and needs a simple web app to manage recipes and calculate real cost and suggested price. The app should let her define recipes, attach ingredient costs, include labor and energy, and compute per-portion cost and margin. Long-term, prices must be updatable and sales tracked.
+
+Primary short-term goal: deliver an MVP focused on recipe management and accurate per-portion cost calculation.
+
+2. Objectives & Success Metrics
+- Objective: Enable the seller to compute recipe cost and suggested sale price quickly and reliably.
+- Short-term success metrics:
+  - Time to compute cost for a new recipe: < 3 minutes
+  - Accuracy: cost breakdown matches Excel baseline within 2%
+  - Adoption: seller uses web app for >80% of new recipes within 2 weeks
+
+3. Personas
+- Seller: primary user who creates recipes, enters ingredient costs, and sets prices.
+- Accountant/Owner: reviews margins and sales reports (future).
+
+4. MVP Scope (must-have)
+- Recipe CRUD: create, read, update, delete recipes with ingredient list and quantities.
+- Ingredient catalog: name, unit (g, kg, L, unit), purchase price, purchase unit, price effective date.
+- Cost calculator per recipe: ingredient cost (with unit conversion), labor cost, energy cost, packaging/other costs, and overhead percentage.
+- Per-portion cost and suggested price (configurable margin % or markup).
+- Persisted price history for ingredients (allow manual update and timestamped entries).
+- Simple user interface (mobile-friendly) for recipe entry and cost preview.
+
+5. Important Details for Cost Calculation
+- Ingredient costs:
+  - Store price as price-per-purchase-unit (e.g., 4.50 EUR per 1 kg).
+  - Support unit conversions (g ↔ kg, ml ↔ L, pieces) with common densities where needed.
+  - Allow specifying yield and wastage (e.g., 1 kg carrots -> 900 g usable).
+  - Price history: new prices have effective dates; calculations use latest price by default, with option to choose date-specific price.
+
+- Labor cost:
+  - Allow entering labor rate (e.g., EUR/hour) and time-per-recipe (minutes), or a fixed labor cost per batch.
+
+- Energy cost:
+  - Support an energy rate (EUR/kWh) and recipe energy usage (kWh) or estimated minutes at device wattage.
+
+ Overhead:
+   - Global overhead percentage or fixed overhead per portion.
+ 
+ Packaging (per-recipe support):
+   - Packaging may be required for some recipes and optional for others — model this as a per-recipe field that references a packaging SKU.
+   - Packaging items are stored in a `Packaging` catalog (similar to ingredients) with `name`, `unit` (e.g., piece), `price`, and `priceEffectiveDate`.
+   - Support per-portion packaging quantity (e.g., 1 box per portion, or 0.2 roll per portion) and packaging yield where applicable.
+   - Packaging cost can be entered directly on the recipe (override) or derived from the Packaging catalog.
+   - Packaging costs should appear in the cost breakdown and be included in snapshots so historical costs are reproducible.
+ 
+ Output for each recipe:
+   - Ingredient cost subtotal
+   - Labor cost
+   - Energy cost
+   - Packaging cost
+   - Overhead
+   - Total cost per batch and per portion
+   - Suggested sale price (by margin % or markup)
+   - Margin and profit per portion
+
+6. Data Model (high-level)
+- Ingredient:
+  - id, name, defaultUnit, purchaseUnit, price, currency, priceEffectiveDate, density (optional), notes
+
+- IngredientPriceHistory:
+  - id, ingredientId, price, purchaseUnit, effectiveDate
+
+-- Recipe:
+  - id, title, servings (portions), yieldFactor, ingredients: [{ingredientId, quantity, unit, yieldLossPercent}], packaging: [{packagingId, quantityPerPortion, unit}], steps, notes
+
+-- RecipeCostSnapshot:
+  - recipeId, calculatedAt, ingredientCosts, laborCost, energyCost, packagingCost, overhead, totalCost, perPortionCost
+
+-- Packaging:
+  - id, name, unit (e.g., piece), purchaseUnit, price, currency, priceEffectiveDate, notes
+
+7. API Surface (MVP)
+-- GET /ingredients
+-- POST /ingredients
+-- PUT /ingredients/:id
+-- GET /ingredients/:id/prices
+-- POST /ingredients/:id/prices
+-- GET /packaging
+-- POST /packaging
+-- PUT /packaging/:id
+-- GET /packaging/:id/prices
+-- POST /packaging/:id/prices
+-- GET /recipes
+-- POST /recipes
+-- PUT /recipes/:id
+-- GET /recipes/:id/cost?date=&labor=&energy=&overhead=&includePackaging=true
+
+8. UX Notes
+- Simple recipe form: title, servings, ingredient rows (autocomplete ingredient), quantity, unit, yield.
+- Cost preview pane: shows live calculation as ingredient/prices change.
+- Ingredient catalog management screen for updating prices and entering price history.
+
+9. Non-functional Requirements
+- Persistence so data survives restarts (SQLite or small relational DB for MVP).
+- Calculations should be deterministic and test-covered.
+- Basic input validation (units, numeric values) to avoid miscalculations.
+
+10. Acceptance Criteria (MVP)
+- Seller can create a recipe and save it.
+- Seller can maintain ingredient prices.
+- For any recipe, seller can compute a cost-per-portion that includes ingredients, labor, energy, and overhead.
+- Cost history is reproducible by storing snapshots or using historical prices.
+
+11. Roadmap (post-MVP)
+- Sales tracking: record sales (date, quantity, price) and show revenue/margin over time.
+- Auto-update ingredient prices via CSV import or supplier API.
+- Batch production mode (scale ingredients for N portions and print labels).
+- Reports: monthly margin, best-selling recipes, low-margin alerts.
+
+12. Next Steps (recommended)
+1) Confirm units and common conversions you currently use in Excel (g/kg, ml/L, pieces) so we match behavior.
+2) Decide preferred minimal tech stack for MVP (suggestion: Node.js backend + SQLite, simple React or Svelte frontend).
+3) I'll convert MVP items into tasks and scaffold backend models & a cost-calculation API.
+
+13. Deliverables for this phase
+- Updated `recipes.prd` (this file) focused on cost calculation and recipe management.
+- Data model and API list for implementation.
+- Optionally: initial backend scaffold and cost-calculation unit tests.
+
+Review this and tell me which next step you want: (A) I convert items into issues/tasks, (B) I scaffold backend models & API, or (C) I scaffold frontend recipe entry UI.
+
