@@ -1,198 +1,84 @@
 @startuml
-' PlantUML class diagram for Recipes & Cost Calculator
+' PlantUML class diagram for Recipes & Cost Calculator with Domains
 
-class Ingredient {
-  + id: UUID
-  + name: String
-  + defaultUnit: String
-  + purchaseUnit: String
-  + currency: String
-  + density?: Float
-  + notes?: String
+package "Ingredient Reference System" as IRS {
+
+  enum IngredientType {
+    ENERGY
+    FOOD
+    MANPOWER
+    PACKAGING
+    OTHER
+  }
+
+  class Ingredient {
+    + id: UUID
+    + name: String
+    + defaultUnit: String
+    + purchaseUnit: String
+    + currency: String
+    + density?: Float
+    + notes?: String
+  }
+  Ingredient -- "1..1" IngredientType: type
+
+  class IngredientPriceHistory {
+    + id: UUID
+    + ingredientId: UUID
+    + pricePerPurchaseUnit: Decimal
+    + effectiveDate: DateTime
+  }
+
 }
 
-class IngredientPriceHistory {
-  + id: UUID
-  + ingredientId: UUID
-  + price: Decimal
-  + purchaseUnit: String
-  + effectiveDate: Date
+package "Recipe Management System" as RMS {
+  class Recipe {
+    + id: UUID
+    + title: String
+    + servings: Integer
+    + yieldFactor?: Float
+    + steps: Text
+    + notes?: String
+    + ingredients: List<RecipeIngredient>
+  }
+
+  class RecipeIngredient {
+    + ingredientId: UUID
+    + quantity: Decimal
+    + unit: String
+    + yieldLossPercent?: Float
+  }
 }
 
-class Packaging {
-  + id: UUID
-  + name: String
-  + unit: String
-  + purchaseUnit: String
-  + currency: String
-  + notes?: String
-}
+package "Cost/History Management System" as CHMS {
+  class RecipeCostSnapshot {
+    + id: UUID
+    + recipeId: UUID
+    + calculatedAt: DateTime
+    + ingredientCosts: JSON
+    + packagingCost: Decimal
+    + laborCost: Decimal
+    + energyCost: Decimal
+    + overhead: Decimal
+    + totalCost: Decimal
+    + perPortionCost: Decimal
+  }
 
-class PackagingPriceHistory {
-  + id: UUID
-  + packagingId: UUID
-  + price: Decimal
-  + purchaseUnit: String
-  + effectiveDate: Date
-}
-
-class Recipe {
-  + id: UUID
-  + title: String
-  + servings: Integer
-  + yieldFactor?: Float
-  + steps: Text
-  + notes?: String
-}
-
-class RecipeIngredient {
-  + id: UUID
-  + recipeId: UUID
-  + ingredientId: UUID
-  + quantity: Decimal
-  + unit: String
-  + yieldLossPercent?: Float
-}
-
-class RecipePackaging {
-  + id: UUID
-  + recipeId: UUID
-  + packagingId: UUID
-  + quantityPerPortion: Decimal
-  + unit: String
-}
-
-class RecipeCostSnapshot {
-  + id: UUID
-  + recipeId: UUID
-  + calculatedAt: DateTime
-  + ingredientCosts: JSON
-  + packagingCost: Decimal
-  + laborCost: Decimal
-  + energyCost: Decimal
-  + overhead: Decimal
-  + totalCost: Decimal
-  + perPortionCost: Decimal
-}
-
-class SalesRecord {
-  + id: UUID
-  + recipeId: UUID
-  + soldAt: DateTime
-  + quantity: Integer
-  + salePricePerPortion: Decimal
+  class SalesRecord {
+    + id: UUID
+    + recipeId: UUID
+    + soldAt: DateTime
+    + quantity: Integer
+    + salePricePerPortion: Decimal
+  }
 }
 
 ' Relationships
-Ingredient "1" -- "0..*" IngredientPriceHistory : priceHistory
-Packaging "1" -- "0..*" PackagingPriceHistory : priceHistory
+IRS.Ingredient "1" -- "0..*" IRS.IngredientPriceHistory : priceHistory
+RMS.Recipe "1" -- "0..*" RMS.RecipeIngredient : has
+RMS.RecipeIngredient "*" -- "1" IRS.Ingredient : references
+RMS.Recipe "1" -- "0..*" CHMS.RecipeCostSnapshot : snapshots
+RMS.Recipe "1" -- "0..*" CHMS.SalesRecord : sales
 
-Recipe "1" -- "0..*" RecipeIngredient : has
-RecipeIngredient "*" -- "1" Ingredient : references
-
-Recipe "1" -- "0..*" RecipePackaging : uses
-RecipePackaging "*" -- "1" Packaging : references
-
-Recipe "1" -- "0..*" RecipeCostSnapshot : snapshots
-Recipe "1" -- "0..*" SalesRecord : sales
-
-@enduml
-@startuml
-' PlantUML class diagram for Recipes & Cost Calculator
-
-class Ingredient {
-  + id: UUID
-  + name: String
-  + defaultUnit: String
-  + purchaseUnit: String
-  + currency: String
-  + density?: Float
-  + notes?: String
-}
-
-class IngredientPriceHistory {
-  + id: UUID
-  + ingredientId: UUID
-  + price: Decimal
-  + purchaseUnit: String
-  + effectiveDate: Date
-}
-
-class Packaging {
-  + id: UUID
-  + name: String
-  + unit: String
-  + purchaseUnit: String
-  + currency: String
-  + notes?: String
-}
-
-class PackagingPriceHistory {
-  + id: UUID
-  + packagingId: UUID
-  + price: Decimal
-  + purchaseUnit: String
-  + effectiveDate: Date
-}
-
-class Recipe {
-  + id: UUID
-  + title: String
-  + servings: Integer
-  + yieldFactor?: Float
-  + steps: Text
-  + notes?: String
-}
-
-class RecipeIngredient {
-  + id: UUID
-  + recipeId: UUID
-  + ingredientId: UUID
-  + quantity: Decimal
-  + unit: String
-  + yieldLossPercent?: Float
-}
-
-class RecipePackaging {
-  + id: UUID
-  + recipeId: UUID
-  + packagingId: UUID
-  + quantityPerPortion: Decimal
-  + unit: String
-}
-
-class RecipeCostSnapshot {
-  + id: UUID
-  + recipeId: UUID
-  + calculatedAt: DateTime
-  + ingredientCosts: JSON
-  + packagingCost: Decimal
-  + laborCost: Decimal
-  + energyCost: Decimal
-  + overhead: Decimal
-  + totalCost: Decimal
-  + perPortionCost: Decimal
-}
-
-class SalesRecord {
-  + id: UUID
-  + recipeId: UUID
-  + soldAt: DateTime
-  + quantity: Integer
-  + salePricePerPortion: Decimal
-}
-
-' Relationships
-Ingredient "1" -- "0..*" IngredientPriceHistory : priceHistory
-Packaging "1" -- "0..*" PackagingPriceHistory : priceHistory
-
-Recipe "1" -- "0..*" RecipeIngredient : has
-RecipeIngredient "*" -- "1" Ingredient : references
-
-Recipe "1" -- "0..*" RecipePackaging : uses
-RecipePackaging "*" -- "1" Packaging : references
-
-Recipe "1" -- "0..*" RecipeCostSnapshot : snapshots
-Recipe "1" -- "0..*" SalesRecord : sales
 
 @enduml

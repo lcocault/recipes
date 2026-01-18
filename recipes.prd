@@ -64,30 +64,33 @@ Primary short-term goal: deliver an MVP focused on recipe management and accurat
 - IngredientPriceHistory:
   - id, ingredientId, price, purchaseUnit, effectiveDate
 
--- Recipe:
+- Recipe:
   - id, title, servings (portions), yieldFactor, ingredients: [{ingredientId, quantity, unit, yieldLossPercent}], packaging: [{packagingId, quantityPerPortion, unit}], steps, notes
 
--- RecipeCostSnapshot:
+- RecipeCostSnapshot:
   - recipeId, calculatedAt, ingredientCosts, laborCost, energyCost, packagingCost, overhead, totalCost, perPortionCost
 
--- Packaging:
+- Packaging:
   - id, name, unit (e.g., piece), purchaseUnit, price, currency, priceEffectiveDate, notes
 
+- SalesRecord:
+  - id, recipeId, soldAt, quantity, salePricePerPortion
+
 7. API Surface (MVP)
--- GET /ingredients
--- POST /ingredients
--- PUT /ingredients/:id
--- GET /ingredients/:id/prices
--- POST /ingredients/:id/prices
--- GET /packaging
--- POST /packaging
--- PUT /packaging/:id
--- GET /packaging/:id/prices
--- POST /packaging/:id/prices
--- GET /recipes
--- POST /recipes
--- PUT /recipes/:id
--- GET /recipes/:id/cost?date=&labor=&energy=&overhead=&includePackaging=true
+- GET /ingredients
+- POST /ingredients
+- PUT /ingredients/:id
+- GET /ingredients/:id/prices
+- POST /ingredients/:id/prices
+- GET /packaging
+- POST /packaging
+- PUT /packaging/:id
+- GET /packaging/:id/prices
+- POST /packaging/:id/prices
+- GET /recipes
+- POST /recipes
+- PUT /recipes/:id
+- GET /recipes/:id/cost?date=&labor=&energy=&overhead=&includePackaging=true
 
 8. UX Notes
 - Simple recipe form: title, servings, ingredient rows (autocomplete ingredient), quantity, unit, yield.
@@ -121,5 +124,11 @@ Primary short-term goal: deliver an MVP focused on recipe management and accurat
 - Data model and API list for implementation.
 - Optionally: initial backend scaffold and cost-calculation unit tests.
 
-Review this and tell me which next step you want: (A) I convert items into issues/tasks, (B) I scaffold backend models & API, or (C) I scaffold frontend recipe entry UI.
+---
 
+### Relationships (UML-style)
+- **Ingredient** "1" -- "0..*" **IngredientPriceHistory** : priceHistory
+- **Recipe** "1" -- "0..*" **RecipeIngredient** : has
+- **RecipeIngredient** "*" -- "1" **Ingredient** : references
+- **Recipe** "1" -- "0..*" **RecipeCostSnapshot** : snapshots
+- **Recipe** "1" -- "0..*" **SalesRecord** : sales

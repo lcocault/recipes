@@ -1,0 +1,151 @@
+openapi: 3.0.0
+info:
+  title: Recipes & Cost Calculator API
+  description: API specification for managing ingredients, recipes, costs, and sales.
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080
+    description: Local development server
+
+paths:
+  /ingredients:
+    get:
+      summary: Get all ingredients
+      responses:
+        '200':
+          description: A list of ingredients
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Ingredient'
+    post:
+      summary: Add a new ingredient
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Ingredient'
+      responses:
+        '201':
+          description: Ingredient created
+
+  /ingredients/{id}:
+    put:
+      summary: Update an ingredient
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Ingredient'
+      responses:
+        '200':
+          description: Ingredient updated
+
+  /recipes:
+    get:
+      summary: Get all recipes
+      responses:
+        '200':
+          description: A list of recipes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Recipe'
+    post:
+      summary: Add a new recipe
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Recipe'
+      responses:
+        '201':
+          description: Recipe created
+
+  /recipes/{id}:
+    put:
+      summary: Update a recipe
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Recipe'
+      responses:
+        '200':
+          description: Recipe updated
+
+components:
+  schemas:
+    Ingredient:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        defaultUnit:
+          type: string
+        purchaseUnit:
+          type: string
+        price:
+          type: number
+          format: float
+        currency:
+          type: string
+        density:
+          type: number
+          format: float
+        notes:
+          type: string
+
+    Recipe:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        servings:
+          type: integer
+        ingredients:
+          type: array
+          items:
+            $ref: '#/components/schemas/RecipeIngredient'
+        steps:
+          type: string
+        notes:
+          type: string
+
+    RecipeIngredient:
+      type: object
+      properties:
+        ingredientId:
+          type: string
+        quantity:
+          type: number
+          format: float
+        unit:
+          type: string
+        yieldLossPercent:
+          type: number
+          format: float
