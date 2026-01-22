@@ -26,7 +26,6 @@ fn generate_id() -> String {
 /// Request body for creating/updating an ingredient (without requiring ID)
 #[derive(Debug, Deserialize)]
 pub struct CreateIngredientRequest {
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
     pub name: String,
     #[serde(rename = "defaultUnit")]
@@ -35,9 +34,7 @@ pub struct CreateIngredientRequest {
     pub purchase_unit: String,
     pub price: f64,
     pub currency: String,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub density: Option<f64>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub notes: Option<String>,
 }
 

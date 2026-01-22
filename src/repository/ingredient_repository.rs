@@ -3,7 +3,6 @@ use std::collections::HashMap;
 use std::sync::{Arc, RwLock};
 
 /// Repository trait for ingredient storage operations
-#[allow(dead_code)]
 pub trait IngredientRepository: Send + Sync {
     fn list(&self) -> Vec<Ingredient>;
     fn create(&self, ingredient: Ingredient) -> Ingredient;
