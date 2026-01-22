@@ -1,6 +1,6 @@
 use recipes_api::{
     models::Ingredient,
-    repository::{IngredientRepository, InMemoryIngredientRepository},
+    repository::{InMemoryIngredientRepository, IngredientRepository},
 };
 
 fn create_test_ingredient(name: &str) -> Ingredient {

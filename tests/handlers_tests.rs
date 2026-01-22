@@ -1,4 +1,4 @@
-use axum::{extract::State, extract::Path, http::StatusCode, Json};
+use axum::{extract::Path, extract::State, http::StatusCode, Json};
 use std::sync::Arc;
 
 use recipes_api::{
