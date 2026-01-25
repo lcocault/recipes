@@ -1,6 +1,4 @@
-mod ingredient;
-
-use ingredient::Ingredient;
+use recipes::ingredient::Ingredient;
 use std::collections::HashMap;
 use std::io;
 
