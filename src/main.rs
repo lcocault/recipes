@@ -2,14 +2,13 @@ mod handlers;
 mod models;
 mod repository;
 
-use axum::{
-    routing::{get, put},
-    Router,
-};
-use handlers::{create_ingredient, list_ingredients, update_ingredient, AppState};
+use handlers::AppState;
 use repository::InMemoryIngredientRepository;
 use std::sync::Arc;
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
+
+// Include the generated routing code
+include!(concat!(env!("OUT_DIR"), "/generated_routes.rs"));
 
 #[tokio::main]
 async fn main() {
@@ -25,14 +24,8 @@ async fn main() {
     // Initialize repository
     let repo: AppState = Arc::new(InMemoryIngredientRepository::new());
 
-    // Build router
-    let app = Router::new()
-        .route(
-            "/ingredients",
-            get(list_ingredients).post(create_ingredient),
-        )
-        .route("/ingredients/:id", put(update_ingredient))
-        .with_state(repo);
+    // Build router using generated code
+    let app = build_router(repo);
 
     // Run server
     let listener = tokio::net::TcpListener::bind("0.0.0.0:8080").await.unwrap();
