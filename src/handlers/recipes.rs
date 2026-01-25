@@ -6,6 +6,8 @@ use axum::{
 };
 use serde::{Deserialize, Serialize};
 
+// NOTE: This is a stub implementation to satisfy the generated routing code.
+// The Recipe type should match the OpenAPI schema definition when fully implemented.
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Recipe {
     pub id: String,

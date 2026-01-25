@@ -170,6 +170,11 @@ fn derive_handler_name(path: &str, method: &str) -> String {
     // /ingredients + get -> ingredients::list_ingredients
     // /ingredients + post -> ingredients::create_ingredient
     // /ingredients/{id} + put -> ingredients::update_ingredient
+    //
+    // NOTE: Singularization uses simple logic (remove trailing 's')
+    // which works for regular English plurals but may fail for irregular plurals
+    // (e.g., 'categories', 'people'). Consider using a pluralization library
+    // or mapping table for production use with diverse resource names.
     
     let path_parts: Vec<&str> = path.split('/')
         .filter(|s| !s.is_empty() && !s.starts_with('{'))
