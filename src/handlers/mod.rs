@@ -1,3 +1,4 @@
 pub mod ingredients;
+pub mod recipes;
 
-pub use ingredients::{create_ingredient, list_ingredients, update_ingredient, AppState};
+pub use ingredients::AppState;

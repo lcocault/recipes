@@ -2,7 +2,8 @@ use axum::{extract::Path, extract::State, http::StatusCode, Json};
 use std::sync::Arc;
 
 use recipes_api::{
-    handlers::{create_ingredient, list_ingredients, update_ingredient, AppState},
+    handlers::ingredients::{create_ingredient, list_ingredients, update_ingredient},
+    handlers::AppState,
     models::CreateIngredientRequest,
     repository::InMemoryIngredientRepository,
 };

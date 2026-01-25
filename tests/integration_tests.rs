@@ -10,7 +10,7 @@ use tower::ServiceExt;
 
 // Import from the main crate
 use recipes_api::{
-    handlers::{create_ingredient, list_ingredients, update_ingredient},
+    handlers::ingredients::{create_ingredient, list_ingredients, update_ingredient},
     repository::InMemoryIngredientRepository,
 };
 

@@ -1,1 +1,3 @@
 /target
+# Generated routing code is in target/debug/build/*/out/ so this is redundant but kept for clarity
+generated_routes.rs
