@@ -20,6 +20,21 @@ jobs:
           override: true
           profile: minimal
 
+      - name: Generate OpenAPI Rust code
+        if: always()
+        run: |
+          set -euo pipefail
+          mkdir -p src/generated
+          for spec in src/api/*.yaml; do
+            name=$(basename "$spec" .yaml)
+            echo "Generating Rust client for $spec -> src/generated/$name"
+            docker run --rm -v "${{ github.workspace }}:/local" openapitools/openapi-generator-cli generate \
+              -g rust \
+              -i /local/$spec \
+              -o /local/src/generated/$name \
+              --additional-properties=packageName=${name}_api,packageVersion=0.1.0,library=reqwest,supportAsync=true
+          done
+
       - name: Cache cargo
         uses: actions/cache@v4
         with:

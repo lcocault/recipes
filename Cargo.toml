@@ -10,6 +10,13 @@ serde_json = "1.0.149"
 tokio = { version = "1.49.0", features = ["full"] }
 hyper = "1.0"
 
+# Generated OpenAPI clients (generated at build/CI time into `src/generated/<name>`)
+ingredient_api = { path = "src/generated/ingredient", package = "ingredient_api", optional = true }
+recipe_api = { path = "src/generated/recipe", package = "recipe_api", optional = true }
+
+[features]
+with-generated = ["ingredient_api", "recipe_api"]
+
 [[bin]]
 name = "recipes"
 path = "src/ingredient/main.rs"

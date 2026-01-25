@@ -1,1 +1,4 @@
-/target
+target/
+
+# Ignore generated OpenAPI client code
+src/generated/
