@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+echo "Running cargo fmt..."
+# Format all workspace files; include any changes into the commit
+cargo fmt
+
+# Stage any formatting changes so they are included in the commit
+git add -A
+
+exit 0
