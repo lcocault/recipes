@@ -3,7 +3,8 @@ pub mod ingredient;
 // Re-export generated OpenAPI clients when available (generated at build/CI time)
 #[cfg(feature = "with-generated")]
 pub mod generated {
-	pub use ingredient_api as ingredient_api;
-	pub use recipe_api as recipe_api;
+    pub use ingredient_api;
+    pub use recipe_api;
 }
+
 
