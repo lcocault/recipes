@@ -6,5 +6,3 @@ pub mod generated {
     pub use ingredient_api;
     pub use recipe_api;
 }
-
-
