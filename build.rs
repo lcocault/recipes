@@ -59,7 +59,33 @@ fn generate_router_code(spec: &OpenApiSpec) -> String {
     // File header
     code.push_str("// This file is auto-generated from doc/openapi.yaml by build.rs\n");
     code.push_str("// DO NOT EDIT MANUALLY\n\n");
-    code.push_str("use axum::{routing::{get, post, put, delete, patch}, Router};\n\n");
+    
+    // Collect which methods are actually used
+    let mut uses_get = false;
+    let mut uses_post = false;
+    let mut uses_put = false;
+    let mut uses_delete = false;
+    let mut uses_patch = false;
+    
+    for path_item in spec.paths.values() {
+        if path_item.get.is_some() { uses_get = true; }
+        if path_item.post.is_some() { uses_post = true; }
+        if path_item.put.is_some() { uses_put = true; }
+        if path_item.delete.is_some() { uses_delete = true; }
+        if path_item.patch.is_some() { uses_patch = true; }
+    }
+    
+    // Generate selective imports
+    code.push_str("use axum::{routing::{");
+    let mut imports = Vec::new();
+    if uses_get { imports.push("get"); }
+    if uses_post { imports.push("post"); }
+    if uses_put { imports.push("put"); }
+    if uses_delete { imports.push("delete"); }
+    if uses_patch { imports.push("patch"); }
+    code.push_str(&imports.join(", "));
+    code.push_str("}, Router};\n\n");
+    
     code.push_str("pub fn build_router(state: crate::handlers::AppState) -> Router {\n");
     code.push_str("    Router::new()\n");
 
