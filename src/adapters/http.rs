@@ -7,7 +7,7 @@ use std::sync::{Arc, Mutex};
 use crate::core::Ingredient;
 
 #[derive(Debug, Deserialize, Serialize, Clone)]
-pub(crate) struct IngredientDto {
+pub struct IngredientDto {
     name: String,
     default_unit: String,
     purchase_unit: String,
