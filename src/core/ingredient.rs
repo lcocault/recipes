@@ -10,6 +10,11 @@ pub struct Ingredient {
 
 impl Ingredient {
     pub fn new(name: String, default_unit: String, purchase_unit: String, price: f64) -> Self {
-        Self { name, default_unit, purchase_unit, price }
+        Self {
+            name,
+            default_unit,
+            purchase_unit,
+            price,
+        }
     }
 }

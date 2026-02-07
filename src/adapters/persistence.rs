@@ -10,7 +10,9 @@ pub struct InMemoryIngredientRepo {
 
 impl InMemoryIngredientRepo {
     pub fn new() -> Self {
-        Self { inner: Mutex::new(HashMap::new()) }
+        Self {
+            inner: Mutex::new(HashMap::new()),
+        }
     }
 
     pub fn save(&self, recipe: Ingredient) {
