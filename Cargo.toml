@@ -23,4 +23,4 @@ path = "src/ingredient/main.rs"
 
 [[bin]]
 name = "api_server"
-path = "src/ingredient/api.rs"
+path = "src/bin/api_server.rs"

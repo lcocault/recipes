@@ -1,4 +1,4 @@
-use recipes::ingredient::Ingredient;
+use recipes::core::Ingredient;
 use std::collections::HashMap;
 use std::io;
 
