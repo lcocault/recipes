@@ -17,7 +17,10 @@
      - The system displays ingredient details in a table.
      - The table supports sorting and filtering.
 
----
+4. **As a developer, I want to implement a search feature for ingredients so that users can quickly find specific items in the catalog.**
+   - Acceptance Criteria:
+     - The system provides a search bar for ingredient names.
+     - Search results are displayed dynamically as the user types.
 
 ## Epic 2: Recipe Management
 ### User Stories:
@@ -35,7 +38,10 @@
    - Acceptance Criteria:
      - The system confirms deletion before removing a recipe.
 
----
+4. **As a user, I want to search for ingredients by name so that I can quickly find specific items in the catalog.**
+   - Acceptance Criteria:
+     - The system provides a search bar for ingredient names.
+     - Search results are displayed dynamically as the user types.
 
 ## Epic 3: Cost Calculation
 ### User Stories:

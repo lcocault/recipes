@@ -1,0 +1,61 @@
+name: CI
+
+on:
+  push:
+    branches: [ master, develop ]
+  pull_request:
+    branches: [ master, develop ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Rust toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          override: true
+          profile: minimal
+
+      - name: Generate OpenAPI Rust code
+        if: always()
+        run: |
+          set -euo pipefail
+          mkdir -p src/generated
+          for spec in src/api/*.yaml; do
+            name=$(basename "$spec" .yaml)
+            echo "Generating Rust client for $spec -> src/generated/$name"
+            docker run --rm -v "${{ github.workspace }}:/local" openapitools/openapi-generator-cli generate \
+              -g rust \
+              -i /local/$spec \
+              -o /local/src/generated/$name \
+              --additional-properties=packageName=${name}_api,packageVersion=0.1.0,library=reqwest,supportAsync=true
+          done
+
+      - name: Cache cargo
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+
+      - name: Install components
+        run: |
+          rustup component add clippy rustfmt || true
+
+      - name: Format check
+        run: cargo fmt -- --check
+
+      - name: Lint (clippy)
+        run: cargo clippy --workspace --all-targets --all-features -- -D warnings
+
+      - name: Build
+        run: cargo build --workspace --verbose
+
+      - name: Test
+        run: cargo test --workspace --verbose
